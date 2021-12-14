@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, NavLink } from 'react-router-dom';
+import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom';
 
 import CharacterList from './components/Characters/CharacterList';
 import FilmList from './components/Films/FilmList';
@@ -27,7 +27,23 @@ function App() {
 
     // 3. Set the resulting transformation as state using setFilms
     // 4. You'll know it works if the films show up on the page
-    return [];
+    const resp = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/films`, {
+      headers: {
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
+      },
+    });
+    const data = await resp.json();
+    console.log(data);
+    const filmData = data.map((film) => [
+      film.title,
+      film.title.toLowerCase().replace(/ /g, '-'),
+      film.box_office_total,
+      film.academy_award_nominations,
+    ]);
+    setFilms(filmData);
+    // console.log(filmData);
+    return [FilmList];
   };
 
   const getCharacters = async () => {
@@ -43,7 +59,15 @@ function App() {
     //    ]
     // 3. Set the resulting transformation as state using setCharacters
     // 4. You'll know it works if the characters show up on the page
-    return [];
+    const resp = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/characters`, {
+      headers: {
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
+      },
+    });
+    const data = await resp.json();
+    setCharacters(data);
+    return [CharacterList];
   };
 
   return (
@@ -57,7 +81,14 @@ function App() {
             Characters
           </NavLink>
         </header>
-        {/* ADD YOUR ROUTES HERE */}
+        <Switch>
+          <Route path="/films">
+            <FilmList films={films} setFilms={setFilms} />
+          </Route>
+          <Route path="/characters">
+            <CharacterList characters={characters} setCharacters={setCharacters} />
+          </Route>
+        </Switch>
       </BrowserRouter>
     </div>
   );
