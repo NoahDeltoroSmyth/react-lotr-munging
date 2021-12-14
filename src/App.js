@@ -34,7 +34,6 @@ function App() {
       },
     });
     const data = await resp.json();
-    console.log(data);
     const filmData = data.map((film) => [
       film.title,
       film.title.toLowerCase().replace(/ /g, '-'),
@@ -42,7 +41,6 @@ function App() {
       film.academy_award_nominations,
     ]);
     setFilms(filmData);
-    // console.log(filmData);
     return [FilmList];
   };
 
