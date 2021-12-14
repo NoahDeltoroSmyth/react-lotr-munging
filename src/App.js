@@ -64,7 +64,13 @@ function App() {
       },
     });
     const data = await resp.json();
-    setCharacters(data);
+    const charData = data.map((char) => ({
+      name: char.name,
+      birth: char.birth,
+      death: char.death,
+      dates: char.birth === char.death ? 'Unknown' : `${char.birth} - ${char.death}`, //thank you michelle for explaining Ternary expression's to me
+    }));
+    setCharacters(charData);
     return [CharacterList];
   };
 
